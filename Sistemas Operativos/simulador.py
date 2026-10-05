@@ -1,10 +1,7 @@
-"""
-simulador.py
-Intermediario entre la interfaz y los algoritmos.
+#Intermediario entre la interfaz y los algoritmos.
+#Recibe los procesos, el algoritmo elegido y el quantum, y devuelve un
+#ResultadoSimulacion con todo lo que la interfaz necesita mostrar.
 
-Recibe los procesos, el algoritmo elegido y el quantum, y devuelve un
-ResultadoSimulacion con todo lo que la interfaz necesita mostrar.
-"""
 
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
@@ -48,9 +45,6 @@ class ResultadoSimulacion:
     utilizacion_cpu: float             # porcentaje (0 a 100)
 
 
-# ---------------------------------------------------------------------------
-# Cálculos sobre los resultados
-# ---------------------------------------------------------------------------
 def _promedio(valores: List[int]) -> float:
     return sum(valores) / len(valores)
 
@@ -76,9 +70,6 @@ def obtener_orden_ejecucion(segmentos: List[Segmento]) -> List[Optional[str]]:
     return [id_proceso for id_proceso, _, _ in segmentos]
 
 
-# ---------------------------------------------------------------------------
-# Funciones principales
-# ---------------------------------------------------------------------------
 def simular(procesos: List[Proceso], nombre_algoritmo: str,
             quantum: Optional[int] = None) -> ResultadoSimulacion:
     """Ejecuta un algoritmo sobre una COPIA de los procesos."""
@@ -114,11 +105,6 @@ def simular(procesos: List[Proceso], nombre_algoritmo: str,
 
 def comparar_algoritmos(procesos: List[Proceso], quantum: int
                         ) -> List[Tuple[str, float, float, float]]:
-    """
-    Ejecuta los mismos procesos con los seis algoritmos.
-    Devuelve una fila por algoritmo:
-    (nombre, espera promedio, retorno promedio, respuesta promedio)
-    """
     filas = []
     for nombre in ALGORITMOS:
         resultado = simular(procesos, nombre, quantum)

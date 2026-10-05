@@ -1,16 +1,3 @@
-"""
-algoritmos.py
-Contiene los seis algoritmos de planificación de CPU.
-
-Todos los algoritmos:
-  - Reciben una lista de objetos Proceso (ya copiados, se pueden modificar).
-  - Llenan proceso.inicio y proceso.finalizacion.
-  - Devuelven la lista de segmentos del diagrama de Gantt.
-
-Formato de cada segmento:  (id_proceso, inicio, fin)
-Si la CPU está inactiva, id_proceso vale None (constante CPU_OCIOSA).
-"""
-
 from collections import deque
 from typing import List, Optional, Tuple
 

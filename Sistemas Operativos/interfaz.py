@@ -1,10 +1,3 @@
-"""
-interfaz.py
-Toda la interfaz gráfica (Tkinter + ttk).
-No contiene lógica de planificación: solo lee datos, valida, llama a
-simulador.py y muestra los resultados.
-"""
-
 import tkinter as tk
 from tkinter import messagebox, ttk
 

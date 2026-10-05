@@ -1,9 +1,3 @@
-"""
-proceso.py
-Contiene la clase Proceso: guarda los datos originales de cada proceso
-y los resultados que se calculan después de la simulación.
-"""
-
 from dataclasses import dataclass, field
 from typing import Optional
 

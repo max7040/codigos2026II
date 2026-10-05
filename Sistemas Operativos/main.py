@@ -1,7 +1,3 @@
-"""
-main.py
-Punto de entrada de la aplicación. Ejecutar con:  python main.py
-"""
 
 import tkinter as tk
 
