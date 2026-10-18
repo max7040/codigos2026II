@@ -1,3 +1,17 @@
+"""
+gantt.py
+Genera el diagrama de Gantt con Matplotlib y lo integra en Tkinter.
+Solo dibuja los segmentos que recibe; NO contiene lógica de planificación.
+
+Cómo se representa cada cosa:
+  - Ejecución normal ........ barra de color con el ID del proceso
+  - Reanudación ............. barra rayada (el proceso ya se había ejecutado antes)
+  - Interrupción ............ triángulo rojo al final del segmento
+                              (el proceso volverá a ejecutarse más adelante)
+  - CPU inactiva ............ barra gris punteada
+  - Instante actual ......... línea vertical punteada (solo en paso a paso)
+"""
+
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
@@ -9,10 +23,17 @@ COLOR_OCIOSO = "#E0E0E0"
 ALTURA_BARRA = 0.6
 
 
-def _asignar_colores(segmentos):
-    """Un color por proceso (el mismo ID siempre recibe el mismo color)."""
-    ids = sorted({id_proceso for id_proceso, _, _ in segmentos
-                  if id_proceso is not None})
+def _asignar_colores(segmentos, ids_colores=None):
+    """
+    Un color por proceso (el mismo ID siempre recibe el mismo color).
+    Si se envía 'ids_colores' (todos los procesos), los colores no cambian
+    aunque el Gantt todavía no muestre algunos procesos.
+    """
+    if ids_colores is not None:
+        ids = sorted(set(ids_colores))
+    else:
+        ids = sorted({id_proceso for id_proceso, _, _ in segmentos
+                      if id_proceso is not None})
     return {id_proceso: PALETA[i % len(PALETA)] for i, id_proceso in enumerate(ids)}
 
 
@@ -61,9 +82,12 @@ def _dibujar_segmento(eje, id_proceso, inicio, fin, colores, reanuda, interrumpi
                  markersize=7, linestyle="None", clip_on=False)
 
 
-def _configurar_ejes(eje, segmentos):
+def _configurar_ejes(eje, segmentos, tiempo_maximo=None):
     inicio_total = min(inicio for _, inicio, _ in segmentos)
     fin_total = max(fin for _, _, fin in segmentos)
+    if tiempo_maximo is not None:
+        # En paso a paso el eje ya muestra el tiempo total desde el inicio
+        fin_total = max(fin_total, tiempo_maximo)
 
     # Marcas del eje X: todos los instantes donde empieza o termina un segmento
     marcas = sorted({t for _, inicio, fin in segmentos for t in (inicio, fin)})
@@ -79,7 +103,7 @@ def _configurar_ejes(eje, segmentos):
         eje.spines[lado].set_visible(False)
 
 
-def _agregar_leyenda(eje):
+def _agregar_leyenda(eje, con_instante=False):
     elementos = [
         Patch(facecolor="white", edgecolor="black", label="Ejecución"),
         Patch(facecolor="white", edgecolor="black", hatch="//", label="Reanudación"),
@@ -88,31 +112,51 @@ def _agregar_leyenda(eje):
         Patch(facecolor=COLOR_OCIOSO, edgecolor="gray", hatch="..",
               label="CPU inactiva"),
     ]
+    if con_instante:
+        elementos.append(Line2D([0], [0], color="black", linestyle="--",
+                                label="Instante actual"))
     eje.legend(handles=elementos, loc="lower center", bbox_to_anchor=(0.5, 1.0),
-               ncol=4, fontsize=8, frameon=False)
+               ncol=len(elementos), fontsize=8, frameon=False)
 
 
-def crear_figura(segmentos, titulo="Diagrama de Gantt"):
-    """Construye la figura de Matplotlib a partir de los segmentos."""
-    figura = Figure(figsize=(7.5, 3.0), dpi=100)
+def dibujar_en_figura(figura, segmentos, titulo="Diagrama de Gantt",
+                      tiempo_maximo=None, tiempo_actual=None, ids_colores=None):
+    """
+    Dibuja el Gantt dentro de una figura existente (la limpia antes).
+      tiempo_maximo: si se indica, el eje X llega hasta ese tiempo.
+      tiempo_actual: si se indica, marca ese instante con una línea punteada.
+      ids_colores:   IDs de todos los procesos, para que los colores no cambien.
+    """
+    figura.clear()
     eje = figura.add_subplot(111)
 
     if not segmentos:
         eje.text(0.5, 0.5, "Sin datos para mostrar", ha="center", va="center",
                  transform=eje.transAxes)
         eje.axis("off")
-        return figura
+        return
 
-    colores = _asignar_colores(segmentos)
+    colores = _asignar_colores(segmentos, ids_colores)
     detalles = _clasificar_segmentos(segmentos)
 
     for (id_proceso, inicio, fin), (reanuda, interrumpido) in zip(segmentos, detalles):
         _dibujar_segmento(eje, id_proceso, inicio, fin, colores, reanuda, interrumpido)
 
-    _configurar_ejes(eje, segmentos)
-    _agregar_leyenda(eje)
-    figura.suptitle(titulo, fontsize=10, fontweight="bold")
-    figura.tight_layout()
+    _configurar_ejes(eje, segmentos, tiempo_maximo)
+
+    if tiempo_actual is not None:
+        eje.axvline(tiempo_actual, color="black", linestyle="--", linewidth=1)
+
+    _agregar_leyenda(eje, con_instante=tiempo_actual is not None)
+    figura.text(0.5, 0.97, titulo, ha="center", va="top",
+                fontsize=10, fontweight="bold")
+    figura.tight_layout(rect=(0, 0, 1, 0.9))
+
+
+def crear_figura(segmentos, titulo="Diagrama de Gantt"):
+    """Construye la figura de Matplotlib a partir de los segmentos."""
+    figura = Figure(figsize=(7.5, 3.0), dpi=100)
+    dibujar_en_figura(figura, segmentos, titulo)
     return figura
 
 
@@ -126,3 +170,24 @@ def insertar_en_tkinter(figura, contenedor):
     widget = canvas.get_tk_widget()
     widget.pack(fill="both", expand=True)
     return widget
+
+
+class GanttInteractivo:
+    """
+    Gantt que se actualiza sobre el mismo gráfico (lo usa la simulación
+    paso a paso). Cada llamada a actualizar() redibuja los segmentos
+    acumulados que recibe.
+    """
+
+    def __init__(self, contenedor, ids_procesos):
+        self.ids_procesos = list(ids_procesos)
+        self.figura = Figure(figsize=(7.5, 3.2), dpi=100)
+        self.canvas = FigureCanvasTkAgg(self.figura, master=contenedor)
+        self.canvas.get_tk_widget().pack(fill="both", expand=True)
+
+    def actualizar(self, segmentos, titulo, tiempo_maximo, tiempo_actual):
+        dibujar_en_figura(self.figura, segmentos, titulo,
+                          tiempo_maximo=tiempo_maximo,
+                          tiempo_actual=tiempo_actual,
+                          ids_colores=self.ids_procesos)
+        self.canvas.draw()

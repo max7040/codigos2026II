@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador: Problema de Lectores y Escritores</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @keyframes pulseRed {
+    0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.7); }
+    50%     { box-shadow: 0 0 18px 6px rgba(220,38,38,.8); }
+  }
+  @keyframes pulseGreen {
+    0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
+    50%     { box-shadow: 0 0 22px 6px rgba(34,197,94,.6); }
+  }
+  @keyframes pulseViolet {
+    0%,100% { box-shadow: 0 0 0 0 rgba(124,58,237,.6); }
+    50%     { box-shadow: 0 0 26px 8px rgba(124,58,237,.8); }
+  }
+  #escena { position: relative; min-width: 1000px; height: 420px; }
+  .hilo {
+    position: absolute; left: 0; top: 0; width: 80px; height: 56px;
+    border-radius: 10px; color: #fff; z-index: 5; text-align: center; line-height: 1.1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: transform .8s cubic-bezier(.4,0,.2,1), opacity .6s, background-color .3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  }
+  .hilo b { font-size: 20px; }
+  .hilo small { font-size: 9px; padding: 0 3px; }
+  .c-lector  { background: #3b82f6; }
+  .c-escritor{ background: #f59e0b; }
+  .c-bloq    { background: #dc2626; animation: pulseRed 1s infinite; }
+  .c-leer    { background: #16a34a; }
+  .c-escr    { background: #7c3aed; animation: pulseViolet 1s infinite; }
+  .c-sal     { background: #64748b; }
+  .barrera {
+    position: absolute; top: 0; bottom: 0; width: 12px; border-radius: 6px; z-index: 3;
+    transition: background-color .3s, box-shadow .3s;
+  }
+  .abierta { background: #22c55e; box-shadow: 0 0 14px #22c55e; }
+  .cerrada { background: #dc2626; box-shadow: 0 0 14px #dc2626; }
+  .etq {
+    position: absolute; bottom: 8px; width: 110px; text-align: center; z-index: 4;
+    font-family: monospace; font-size: 13px; font-weight: 700;
+    background: #fff; border: 2px solid #94a3b8; border-radius: 8px; padding: 2px 0;
+  }
+  #recurso { position: absolute; top: 10px; z-index: 2; border-radius: 14px; border: 4px solid #94a3b8;
+    background: #fff; text-align: center; padding: 6px; transition: all .3s; }
+  #recurso.lectura  { border-color: #16a34a; background: #f0fdf4; animation: pulseGreen 1.4s infinite; }
+  #recurso.escritura{ border-color: #7c3aed; background: #f5f3ff; animation: pulseViolet 1s infinite; }
+  #log::-webkit-scrollbar { width: 8px; }
+  #log::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+</style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+<div class="max-w-6xl mx-auto p-4 md:p-6 space-y-5">
+
+  <header>
+    <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Problema Clásico de Lectores y Escritores</h1>
+    <p class="text-slate-600 text-sm mt-1">Sincronización con los semáforos <code class="bg-slate-200 px-1 rounded">mutex</code> y <code class="bg-slate-200 px-1 rounded">rw_mutex</code> (preferencia a lectores).</p>
+  </header>
+
+  <!-- Panel de control y contadores -->
+  <section class="grid md:grid-cols-2 gap-5">
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="font-semibold mb-3">Panel de control</h2>
+      <div class="flex flex-wrap gap-2">
+        <button id="btnLector" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition">Crear Lector</button>
+        <button id="btnEscritor" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium transition">Crear Escritor</button>
+        <button id="btnAuto" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">Simulación Automática</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="font-semibold mb-3">Variables de sincronización</h2>
+      <div class="grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-lg bg-slate-50 border p-3">
+          <div class="text-xs text-slate-500 font-mono">lectores_activos</div>
+          <div id="cLectores" class="text-3xl font-bold mt-1">0</div>
+        </div>
+        <div class="rounded-lg bg-slate-50 border p-3">
+          <div class="text-xs text-slate-500 font-mono">mutex</div>
+          <div id="cMutex" class="text-3xl font-bold mt-1">1</div>
+        </div>
+        <div class="rounded-lg bg-slate-50 border p-3">
+          <div class="text-xs text-slate-500 font-mono">rw_mutex</div>
+          <div id="cRw" class="text-3xl font-bold mt-1">1</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Escena animada -->
+  <section class="bg-white rounded-xl shadow p-4">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <h2 class="font-semibold">Zona de Espera → Sección Crítica</h2>
+      <div class="flex flex-wrap gap-3 text-xs text-slate-600">
+        <span><i class="inline-block w-3 h-3 rounded bg-blue-500"></i> Lector</span>
+        <span><i class="inline-block w-3 h-3 rounded bg-amber-500"></i> Escritor</span>
+        <span><i class="inline-block w-3 h-3 rounded bg-red-600"></i> Esperando semáforo</span>
+        <span><i class="inline-block w-3 h-3 rounded bg-green-600"></i> Leyendo</span>
+        <span><i class="inline-block w-3 h-3 rounded bg-violet-600"></i> Escribiendo</span>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <div id="escena" class="rounded-lg">
+        <div id="zEspera" class="absolute top-0 bottom-0 left-0 rounded-lg bg-slate-50 border border-slate-200"></div>
+        <div id="zCritica" class="absolute top-0 bottom-0 rounded-lg bg-slate-100 border-2 border-dashed border-slate-400"></div>
+        <div id="tEspera" class="absolute left-3 bottom-12 text-xs font-semibold text-slate-500 uppercase tracking-wide">Zona de espera (colas)</div>
+
+        <div id="bM" class="barrera cerrada"></div>
+        <div id="eM" class="etq">mutex = 1</div>
+        <div id="bR" class="barrera cerrada"></div>
+        <div id="eR" class="etq">rw_mutex = 1</div>
+
+        <div id="recurso">
+          <div class="text-[10px] uppercase tracking-wider text-slate-500">Sección crítica · Base de datos</div>
+          <div class="flex items-center justify-center gap-3">
+            <div id="dbValor" class="text-3xl font-extrabold font-mono">0</div>
+            <div id="dbEstado" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">LIBRE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registro -->
+  <section class="bg-slate-900 rounded-xl shadow p-4">
+    <h2 class="font-semibold text-slate-100 mb-2">Registro de eventos</h2>
+    <div id="log" class="h-56 overflow-y-auto font-mono text-sm space-y-1"></div>
+  </section>
+
+</div>
+
+<script>
+/* ===================== Utilidades ===================== */
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rand = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+
+/* ===================== Semáforo ===================== */
+class Semaforo {
+  constructor(nombre, valor) {
+    this.nombre = nombre;
+    this.valor = valor;
+    this.cola = [];
+    this.destello = false;   // fuerza el color verde un instante al pasar un hilo
+    this.temp = null;
+  }
+  flash() {
+    this.destello = true;
+    clearTimeout(this.temp);
+    this.temp = setTimeout(() => { this.destello = false; render(); }, 900);
+  }
+  wait() {
+    if (this.valor > 0) {
+      this.valor--;
+      this.flash();
+      render();
+      return Promise.resolve();
+    }
+    return new Promise(resolve => this.cola.push(resolve));
+  }
+  signal() {
+    if (this.cola.length > 0) {
+      this.cola.shift()();   // el semáforo pasa directamente al hilo en espera
+    } else {
+      this.valor++;
+    }
+    this.flash();
+    render();
+  }
+}
+
+/* ===================== Estado global ===================== */
+const mutex = new Semaforo('mutex', 1);
+const rwMutex = new Semaforo('rw_mutex', 1);
+let lectoresActivos = 0;
+let dato = 0;
+let procesos = [];
+let nLect = 0, nEsc = 0, ordenG = 0;
+
+/* ===================== Registro ===================== */
+function log(texto, tipo = 'info') {
+  const colores = {
+    info: 'text-slate-300', lector: 'text-sky-300', escritor: 'text-amber-300',
+    leer: 'text-green-400', escribir: 'text-violet-400', bloq: 'text-red-400',
+    sistema: 'text-fuchsia-300'
+  };
+  const hora = new Date().toLocaleTimeString('es-PE', { hour12: false });
+  const linea = document.createElement('div');
+  linea.className = colores[tipo] || colores.info;
+  linea.textContent = `[${hora}] ${texto}`;
+  $('log').appendChild(linea);
+  $('log').scrollTop = $('log').scrollHeight;
+}
+
+/* ===================== Geometría de la escena ===================== */
+const G = { w: 80, h: 56, gap: 8 };
+
+function geom() {
+  const W = $('escena').clientWidth, H = $('escena').clientHeight;
+  return { W, H, bM: W * 0.26, bR: W * 0.5, cx: W * 0.56, cw: W * 0.44 - 8 };
+}
+function posCola(i, bx, g) {
+  const filas = Math.max(1, Math.floor((g.H - 30) / (G.h + G.gap)));
+  const col = Math.floor(i / filas), fila = i % filas;
+  return { x: Math.max(4, bx - 16 - G.w - col * (G.w + G.gap)), y: 14 + fila * (G.h + G.gap) };
+}
+function posCrit(i, g) {
+  const cols = Math.max(1, Math.floor((g.cw - 16) / (G.w + G.gap)));
+  return { x: g.cx + 10 + (i % cols) * (G.w + G.gap), y: 112 + Math.floor(i / cols) * (G.h + G.gap) };
+}
+
+/* ===================== Renderizado ===================== */
+const TEXTO = {
+  'ante-mutex': 'Llegando a mutex', 'bloq-mutex': 'Esperando semáforo...',
+  'ante-rw': 'Llegando a rw_mutex', 'bloq-rw': 'Esperando semáforo...',
+  'leyendo': 'Leyendo', 'escribiendo': 'Escribiendo', 'saliendo': 'Saliendo...', 'fin': ''
+};
+
+function claseHilo(p) {
+  if (p.estado.startsWith('bloq')) return 'c-bloq';
+  if (p.estado === 'leyendo') return 'c-leer';
+  if (p.estado === 'escribiendo') return 'c-escr';
+  if (p.estado === 'saliendo') return 'c-sal';
+  return p.tipo === 'lector' ? 'c-lector' : 'c-escritor';
+}
+
+function render() {
+  const g = geom();
+
+  // Contadores
+  $('cLectores').textContent = lectoresActivos;
+  $('cMutex').textContent = mutex.valor;
+  $('cRw').textContent = rwMutex.valor;
+  $('cMutex').className = 'text-3xl font-bold mt-1 ' + (mutex.valor === 1 ? 'text-green-600' : 'text-red-600');
+  $('cRw').className = 'text-3xl font-bold mt-1 ' + (rwMutex.valor === 1 ? 'text-green-600' : 'text-red-600');
+
+  // Zonas y barreras
+  $('zEspera').style.width = (g.cx - 8) + 'px';
+  $('zCritica').style.left = g.cx + 'px';
+  $('zCritica').style.width = g.cw + 'px';
+  [['bM', 'eM', mutex, g.bM], ['bR', 'eR', rwMutex, g.bR]].forEach(([b, e, s, x]) => {
+    const abierta = s.valor > 0 || s.destello;
+    $(b).style.left = x + 'px';
+    $(b).className = 'barrera ' + (abierta ? 'abierta' : 'cerrada');
+    $(e).style.left = (x - 55 + 6) + 'px';
+    $(e).textContent = `${s.nombre} = ${s.valor}`;
+    $(e).style.color = abierta ? '#15803d' : '#b91c1c';
+  });
+
+  // Recurso compartido
+  const escribiendo = procesos.some(p => p.estado === 'escribiendo');
+  const leyendo = procesos.filter(p => p.estado === 'leyendo').length;
+  const rec = $('recurso'), est = $('dbEstado');
+  rec.style.left = (g.cx + 10) + 'px';
+  rec.style.width = (g.cw - 20) + 'px';
+  $('dbValor').textContent = dato;
+  if (escribiendo) {
+    rec.className = 'escritura';
+    est.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-violet-600 text-white';
+    est.textContent = 'ESCRITURA EXCLUSIVA';
+  } else if (leyendo > 0) {
+    rec.className = 'lectura';
+    est.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-green-600 text-white';
+    est.textContent = `LECTURA CONCURRENTE (${leyendo})`;
+  } else {
+    rec.className = '';
+    est.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-slate-200 text-slate-700';
+    est.textContent = 'LIBRE';
+  }
+
+  // Posiciones de los hilos
+  const porOrden = (a, b) => a.orden - b.orden;
+  const qM = procesos.filter(p => p.estado.endsWith('mutex')).sort(porOrden);
+  const qR = procesos.filter(p => p.estado.endsWith('rw')).sort(porOrden);
+  const qC = procesos.filter(p => ['leyendo', 'escribiendo', 'saliendo'].includes(p.estado)).sort(porOrden);
+
+  procesos.forEach(p => {
+    let pos;
+    if (p.estado === 'fin') pos = { x: g.W + 40, y: (p.pos ? p.pos.y : 100) };
+    else if (qM.includes(p)) pos = posCola(qM.indexOf(p), g.bM, g);
+    else if (qR.includes(p)) pos = posCola(qR.indexOf(p), g.bR, g);
+    else pos = posCrit(qC.indexOf(p), g);
+    p.pos = pos;
+
+    if (!p.el) {
+      p.el = document.createElement('div');
+      p.el.style.transform = `translate(-120px, ${pos.y}px)`;
+      $('escena').appendChild(p.el);
+      p.el.getBoundingClientRect(); // fuerza reflow para que la entrada se anime
+    }
+    p.el.className = 'hilo ' + claseHilo(p);
+    p.el.style.opacity = p.estado === 'fin' ? 0 : 1;
+    p.el.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+    p.el.innerHTML = `<b>${p.corto}</b><small>${TEXTO[p.estado]}</small>`;
+  });
+}
+
+function setE(p, estado) {
+  p.estado = estado;
+  p.orden = ++ordenG;
+  render();
+}
+
+function quitar(p) {
+  setE(p, 'fin');
+  setTimeout(() => {
+    p.el.remove();
+    procesos = procesos.filter(x => x !== p);
+    render();
+  }, 900);
+}
+
+/* ===================== Hilos ===================== */
+async function lector(p) {
+  setE(p, 'ante-mutex');
+  log(`[${p.nombre}] llegó → wait(mutex)`, 'lector');
+  await sleep(900);
+  if (mutex.valor === 0) {
+    setE(p, 'bloq-mutex');
+    log(`[${p.nombre}] esperando semáforo (mutex)...`, 'bloq');
+  }
+  await mutex.wait();
+
+  lectoresActivos++;
+  log(`[${p.nombre}] obtuvo mutex → lectores_activos = ${lectoresActivos}`, 'lector');
+  render();
+
+  if (lectoresActivos === 1) {
+    setE(p, 'ante-rw');
+    log(`[${p.nombre}] es el primer lector → wait(rw_mutex)`, 'lector');
+    await sleep(900);
+    if (rwMutex.valor === 0) {
+      setE(p, 'bloq-rw');
+      log(`[${p.nombre}] esperando semáforo (rw_mutex)...`, 'bloq');
+    }
+    await rwMutex.wait();
+  }
+  mutex.signal();
+
+  setE(p, 'leyendo');
+  log(`[${p.nombre}] leyendo... valor = ${dato}`, 'leer');
+  await sleep(rand(4000, 6000));
+
+  setE(p, 'saliendo');
+  log(`[${p.nombre}] terminó de leer → wait(mutex)`, 'lector');
+  await mutex.wait();
+  lectoresActivos--;
+  log(`[${p.nombre}] salió → lectores_activos = ${lectoresActivos}`, 'lector');
+  if (lectoresActivos === 0) {
+    log(`[${p.nombre}] fue el último lector → signal(rw_mutex)`, 'lector');
+    rwMutex.signal();
+  }
+  mutex.signal();
+  quitar(p);
+}
+
+async function escritor(p) {
+  setE(p, 'ante-rw');
+  log(`[${p.nombre}] llegó → wait(rw_mutex)`, 'escritor');
+  await sleep(900);
+  if (rwMutex.valor === 0) {
+    setE(p, 'bloq-rw');
+    log(`[${p.nombre}] esperando semáforo (rw_mutex)...`, 'bloq');
+  }
+  await rwMutex.wait();
+
+  setE(p, 'escribiendo');
+  log(`[${p.nombre}] escribiendo... (acceso exclusivo)`, 'escribir');
+  await sleep(rand(3500, 4500));
+
+  dato = rand(10, 99);
+  log(`[${p.nombre}] terminó de escribir → nuevo valor = ${dato}`, 'escribir');
+  rwMutex.signal();
+  quitar(p);
+}
+
+function crearLector() {
+  nLect++;
+  const p = { tipo: 'lector', nombre: `Lector ${nLect}`, corto: `L${nLect}`, estado: 'nuevo', orden: ++ordenG };
+  procesos.push(p);
+  lector(p);
+}
+function crearEscritor() {
+  nEsc++;
+  const p = { tipo: 'escritor', nombre: `Escritor ${nEsc}`, corto: `E${nEsc}`, estado: 'nuevo', orden: ++ordenG };
+  procesos.push(p);
+  escritor(p);
+}
+
+/* ===================== Simulación automática ===================== */
+async function simulacionAutomatica() {
+  const btn = $('btnAuto');
+  btn.disabled = true;
+  log('--- Inicio de la simulación automática ---', 'sistema');
+  for (let i = 0; i < 10; i++) {
+    if (Math.random() < 0.65) crearLector(); else crearEscritor();
+    await sleep(rand(700, 1800));
+  }
+  log('--- Fin de la generación de hilos ---', 'sistema');
+  btn.disabled = false;
+}
+
+/* ===================== Eventos ===================== */
+$('btnLector').addEventListener('click', crearLector);
+$('btnEscritor').addEventListener('click', crearEscritor);
+$('btnAuto').addEventListener('click', simulacionAutomatica);
+window.addEventListener('resize', render);
+
+render();
+log('Simulador listo. Crea lectores y escritores para comenzar.', 'sistema');
+</script>
+</body>
+</html>

@@ -1,8 +1,10 @@
+
 import tkinter as tk
-from tkinter import filedialog,messagebox, ttk
+from tkinter import filedialog, messagebox, ttk
 
 import cargador
 import gantt
+import interfaz_pasos
 import simulador
 from proceso import Proceso
 
@@ -43,6 +45,9 @@ class InterfazSimulador:
         self._crear_panel_resultados(derecha)
         self._crear_panel_gantt(derecha)
 
+    # ======================================================================
+    # Construcción de la interfaz
+    # ======================================================================
     def _configurar_estilos(self):
         estilo = ttk.Style()
         estilo.theme_use("clam")
@@ -108,6 +113,7 @@ class InterfazSimulador:
             side="left", padx=4)
         ttk.Button(botones, text="LIMPIAR", command=self.limpiar_procesos).pack(
             side="left", padx=4)
+
         ttk.Button(marco, text="CARGAR EXCEL", command=self.cargar_excel).grid(
             row=3, column=0, columnspan=4, pady=(8, 0))
 
@@ -147,10 +153,14 @@ class InterfazSimulador:
         ttk.Button(botones, text="COMPARAR ALGORITMOS", style="Accion.TButton",
                    command=self.comparar_algoritmos).pack(side="left", padx=4)
 
+        ttk.Button(marco, text="SIMULACIÓN PASO A PASO", style="Accion.TButton",
+                   command=self.abrir_paso_a_paso).grid(
+            row=4, column=0, columnspan=3, pady=(0, 4))
+
         ttk.Label(marco, justify="left", text=(
             "No expulsivos: FCFS, SJF, Prioridad no expulsiva\n"
             "Expulsivos: SRTF, Prioridad expulsiva, Round Robin")).grid(
-            row=4, column=0, columnspan=3, sticky="w", padx=4, pady=(4, 0))
+            row=5, column=0, columnspan=3, sticky="w", padx=4, pady=(4, 0))
 
         self._actualizar_tipo()
 
@@ -285,7 +295,7 @@ class InterfazSimulador:
         self.procesos.clear()
         self._vaciar_tabla(self.tabla_procesos)
         self._limpiar_resultados()
-        
+
     def cargar_excel(self):
         ruta = filedialog.askopenfilename(
             title="Seleccionar archivo Excel",
@@ -325,6 +335,19 @@ class InterfazSimulador:
         if quantum is not None:
             titulo += f" (quantum = {quantum})"
         self._mostrar_gantt(resultado.segmentos, titulo)
+
+    def abrir_paso_a_paso(self):
+        """Prepara la simulación paso a paso y abre su ventana."""
+        try:
+            self._validar_hay_procesos()
+            nombre = self.var_algoritmo.get()
+            quantum = self._leer_quantum() if nombre == simulador.ROUND_ROBIN else None
+            simulacion = simulador.simular_paso_a_paso(self.procesos, nombre, quantum)
+        except ValueError as error:
+            messagebox.showerror("No se puede iniciar el paso a paso", str(error))
+            return
+
+        interfaz_pasos.VentanaPasoAPaso(self.raiz, simulacion)
 
     def comparar_algoritmos(self):
         try:
