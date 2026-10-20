@@ -182,6 +182,8 @@ class InterfazSimulador:
         self.var_prom_respuesta = tk.StringVar(value="-")
         self.var_tiempo_total = tk.StringVar(value="-")
         self.var_utilizacion = tk.StringVar(value="-")
+        self.var_cpu = tk.StringVar(value="-")
+        self.var_completados = tk.StringVar(value="-")
         self.var_orden = tk.StringVar(value="-")
 
         estadisticas = [
@@ -190,6 +192,8 @@ class InterfazSimulador:
             ("Promedio de respuesta:", self.var_prom_respuesta),
             ("Tiempo total:", self.var_tiempo_total),
             ("Utilización de CPU:", self.var_utilizacion),
+            ("CPU ocupada / inactiva:", self.var_cpu),
+            ("Procesos completados:", self.var_completados),
         ]
         cuadro = ttk.Frame(marco)
         cuadro.pack(fill="x", pady=(8, 0))
@@ -204,8 +208,8 @@ class InterfazSimulador:
         ttk.Label(cuadro, text="Orden de ejecución:").grid(
             row=3, column=0, sticky="nw", pady=(4, 0))
         ttk.Label(cuadro, textvariable=self.var_orden, style="Valor.TLabel",
-                  wraplength=520, justify="left").grid(
-            row=3, column=1, columnspan=3, sticky="w", pady=(4, 0))
+                  wraplength=700, justify="left").grid(
+            row=3, column=1, columnspan=5, sticky="w", pady=(4, 0))
 
     def _crear_panel_gantt(self, padre):
         self.marco_gantt = ttk.LabelFrame(padre, text="DIAGRAMA DE GANTT", padding=8)
@@ -382,6 +386,10 @@ class InterfazSimulador:
         self.var_prom_respuesta.set(f"{resultado.promedio_respuesta:.2f}")
         self.var_tiempo_total.set(str(resultado.tiempo_total))
         self.var_utilizacion.set(f"{resultado.utilizacion_cpu:.2f} %")
+        self.var_cpu.set(f"{resultado.tiempo_cpu_ocupada} / "
+                         f"{resultado.tiempo_cpu_inactiva} unidades")
+        self.var_completados.set(f"{resultado.procesos_completados} de "
+                                 f"{len(resultado.procesos)}")
 
         pasos = ["Ocioso" if x is None else x for x in resultado.orden]
         self.var_orden.set(" → ".join(pasos))
@@ -416,6 +424,7 @@ class InterfazSimulador:
         self._vaciar_tabla(self.tabla_comparacion)
         for variable in (self.var_prom_espera, self.var_prom_retorno,
                          self.var_prom_respuesta, self.var_tiempo_total,
-                         self.var_utilizacion, self.var_orden):
+                         self.var_utilizacion, self.var_cpu,
+                         self.var_completados, self.var_orden):
             variable.set("-")
         self._mostrar_marcador_gantt()

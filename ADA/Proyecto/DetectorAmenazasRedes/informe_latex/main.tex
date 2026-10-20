@@ -1,0 +1,335 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
+\onehalfspacing
+
+\lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
+  backgroundcolor=\color{gray!8}, columns=fullflexible, keepspaces=true,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {→}{{->}}1 {≥}{{>=}}1}
+
+% ===================== DATOS EDITABLES DE LA PORTADA =====================
+\newcommand{\universidad}{Universidad Nacional del Altiplano}
+\newcommand{\facultad}{Facultad de Ingeniería Mecánica, Eléctrica, Electrónica y Sistemas}
+\newcommand{\escuela}{Escuela Profesional de Ingeniería de Sistemas}
+\newcommand{\curso}{Análisis y Diseño de Algoritmos}
+\newcommand{\titulotrabajo}{Detector de Amenazas en Redes: modelado y análisis de conexiones sospechosas mediante grafos}
+\newcommand{\estudiante}{Ali Máximo Huisa Quispe}
+\newcommand{\codigo}{221074}
+\newcommand{\docente}{[Nombre del docente]}
+\newcommand{\semestre}{2026-II}
+\newcommand{\ciudad}{Puno, Perú}
+\newcommand{\fechaentrega}{[Fecha de entrega]}
+% ==========================================================================
+
+\newcommand{\pendiente}[1]{\textcolor{red}{\textbf{[PENDIENTE: #1]}}}
+\newcommand{\pp}{\textcolor{red}{[pend.]}}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+{\Large\bfseries \universidad\par}
+\vspace{0.3cm}
+{\large \facultad\par}
+{\large \escuela\par}
+\vspace{2cm}
+{\large Curso: \curso\par}
+\vspace{1.5cm}
+{\LARGE\bfseries \titulotrabajo\par}
+\vspace{2cm}
+{\large\textbf{Estudiante:} \estudiante\par}
+{\large\textbf{Código:} \codigo\par}
+{\large\textbf{Docente:} \docente\par}
+{\large\textbf{Semestre:} \semestre\par}
+\vfill
+{\large \ciudad\par}
+{\large \fechaentrega\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+\section*{Resumen}
+\addcontentsline{toc}{section}{Resumen}
+Este trabajo presenta el \emph{Detector de Amenazas en Redes}, una aplicación educativa en Python que modela una red informática \textbf{simulada} como un grafo y señala conexiones potencialmente sospechosas mediante reglas configurables y explicables. El proyecto implementa manualmente los algoritmos y estructuras de la primera unidad del curso (ordenamiento, búsqueda, recursividad, divide y vencerás, algoritmos voraces, programación dinámica, tabla hash, árbol binario de búsqueda y representación de grafos) y los integra en una interfaz web con Streamlit, usando NetworkX para calcular posiciones de los nodos y Plotly para la visualización. El sistema no usa inteligencia artificial ni aprendizaje automático, no analiza redes reales y sus alertas no constituyen prueba de una amenaza.
+
+\noindent\textbf{Palabras clave:} grafos, análisis de algoritmos, estructuras de datos, detección basada en reglas, ciberseguridad defensiva, Python.
+
+\section{Introducción}
+Las redes informáticas pueden representarse naturalmente como grafos: los equipos, servidores y cuentas son nodos y las comunicaciones entre ellos son aristas. Esta representación permite aplicar los conocimientos de análisis y diseño de algoritmos a un problema cercano a la ciberseguridad defensiva. El presente informe describe el diseño, la implementación y las pruebas de una aplicación que une ambos mundos con fines estrictamente académicos.
+
+\section{Planteamiento del problema}
+¿Cómo representar una red simulada de modo que sea posible consultar sus conexiones, identificar patrones inusuales con criterios transparentes y, al mismo tiempo, demostrar el uso correcto de las estructuras de datos y los algoritmos estudiados en la primera unidad del curso, comparando su eficiencia de forma reproducible?
+
+\section{Justificación}
+El proyecto integra en un único caso los contenidos de la unidad, lo que facilita comprender dónde se aplica cada técnica. Además, al exigir alertas explicables y evitar cajas negras, refuerza la idea de que un resultado algorítmico debe poder justificarse con datos.
+
+\section{Objetivos}
+\subsection{Objetivo general}
+Desarrollar una aplicación educativa que modele una red simulada mediante grafos y detecte patrones sospechosos con reglas explicables, aplicando los algoritmos y estructuras de datos de la primera unidad del curso.
+
+\subsection{Objetivos específicos}
+\begin{itemize}
+  \item Implementar manualmente los algoritmos de ordenamiento, búsqueda, recursividad, divide y vencerás, voraces y programación dinámica.
+  \item Implementar una tabla hash con encadenamiento, un árbol binario de búsqueda y un grafo con lista de adyacencia.
+  \item Diseñar reglas configurables que generen alertas con justificación, nivel de riesgo y recomendación.
+  \item Visualizar la red con NetworkX y Plotly e integrar todo en una interfaz Streamlit.
+  \item Diseñar experimentos reproducibles para comparar algoritmos de ordenamiento.
+  \item Verificar el comportamiento con pruebas automatizadas con pytest.
+\end{itemize}
+
+\section{Alcances y limitaciones}
+\textbf{Alcances.} La aplicación crea, edita, importa (JSON y CSV) y exporta redes simuladas; las visualiza; aplica cuatro reglas de detección; ofrece un laboratorio de algoritmos y gráficos estadísticos.
+
+\noindent\textbf{Limitaciones.} No escanea redes reales ni ejecuta acciones contra dispositivos. No emplea inteligencia artificial. Los datos son simulados o introducidos por el usuario, por lo que las alertas no demuestran amenazas reales. Los tiempos medidos dependen del equipo. Los algoritmos de grafos de unidades posteriores no se incluyen como requisito.
+
+\section{Fundamentos teóricos}
+Los contenidos se tomaron de la primera unidad del curso; en el código cada módulo indica la semana del sílabo a la que corresponde.
+
+\subsection{Complejidad algorítmica}
+El análisis asintótico describe cómo crece el tiempo o el espacio con el tamaño de la entrada $n$ mediante las notaciones $O$, $\Omega$ y $\Theta$ \cite{cormen2022,levitin2012}. Es una propiedad del algoritmo, distinta del tiempo medido en una computadora concreta.
+
+\subsection{Ordenamiento}
+Burbuja, inserción y selección tienen costo $O(n^2)$ en el peor caso; Merge Sort cuesta $O(n\log n)$ en todos los casos y necesita $O(n)$ de espacio adicional; Quick Sort cuesta $O(n\log n)$ en promedio y $O(n^2)$ en el peor caso \cite{cormen2022,sedgewick2011,knuth1998}.
+
+\subsection{Búsqueda}
+La búsqueda lineal recorre la lista en $O(n)$; la binaria exige una lista ordenada y descarta la mitad del intervalo en cada paso, con costo $O(\log n)$ \cite{sedgewick2011}.
+
+\subsection{Recursividad y programación dinámica}
+Fibonacci recursivo simple tiene costo exponencial por subproblemas repetidos; la memoización y la tabulación guardan resultados y lo reducen a $O(n)$ \cite{cormen2022}. La mochila 0/1 y la multiplicación de cadena de matrices son problemas clásicos de programación dinámica.
+
+\subsection{Algoritmos voraces}
+Eligen en cada paso la mejor opción local. La mochila fraccionaria y la selección de actividades admiten solución voraz óptima \cite{cormen2022}.
+
+\subsection{Tabla hash, árbol binario de búsqueda y grafos}
+La tabla hash con encadenamiento ofrece inserción y búsqueda en $O(1)$ promedio. El árbol binario de búsqueda ofrece $O(h)$ para sus operaciones. Un grafo puede representarse con lista de adyacencia ($O(n+m)$ de espacio) o con matriz de adyacencia ($O(n^2)$) \cite{cormen2022,sedgewick2011}.
+
+\section{Modelo de grafos}
+La red es un grafo $G=(V,E)$, dirigido o no dirigido. Cada nodo tiene un identificador y un tipo (\texttt{equipo}, \texttt{servidor} o \texttt{cuenta}). Cada conexión tiene tres propiedades: \texttt{peso} ($>0$), \texttt{frecuencia} ($\ge 0$) y \texttt{eventos} (entero $\ge 0$). No se permiten lazos ni conexiones repetidas entre el mismo par. La clase \texttt{Grafo} guarda la lista de adyacencia como diccionarios, y puede generar la matriz de adyacencia para compararlas.
+
+\section{Arquitectura del sistema}
+El código se organiza en módulos independientes (tabla~\ref{tab:arq}). Se agregó el paquete \texttt{interfaz/} respecto de la estructura propuesta inicialmente, para evitar concentrar la lógica de pantalla en \texttt{app.py}.
+
+\begin{table}[h]
+\centering
+\caption{Módulos del proyecto}\label{tab:arq}
+\begin{tabular}{@{}p{4cm}p{10cm}@{}}
+\toprule
+\textbf{Paquete} & \textbf{Contenido}\\
+\midrule
+\texttt{algoritmos/} & Ordenamiento, búsqueda, recursión, divide y vencerás, voraces, programación dinámica.\\
+\texttt{estructuras/} & Tabla hash, árbol binario de búsqueda, grafo.\\
+\texttt{analisis/} & Detector de reglas, métricas del grafo, benchmark de ordenamiento.\\
+\texttt{visualizacion/} & Grafo con NetworkX y Plotly; gráficos estadísticos.\\
+\texttt{utils/} & Validación, importación y exportación JSON/CSV.\\
+\texttt{interfaz/} & Una página de Streamlit por sección y estado compartido.\\
+\texttt{pruebas/} & Pruebas con pytest.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El flujo de datos separa entrada (grafo), reglas (funciones que solo reportan hallazgos), cálculo (puntaje de riesgo) y presentación (interfaz).
+
+\section{Estructuras de datos}
+\begin{itemize}
+  \item \textbf{Tabla hash} (\texttt{estructuras/tabla\_hash.py}): encadenamiento por casilleros, hash propio para cadenas, redimensionamiento al superar un factor de carga de 0,75.
+  \item \textbf{Árbol binario de búsqueda} (\texttt{arbol\_binario.py}): inserción, búsqueda, eliminación, recorrido inorden y altura, de forma iterativa; no admite claves duplicadas.
+  \item \textbf{Grafo} (\texttt{grafo.py}): lista de adyacencia con operaciones de nodos, conexiones, vecinos, grados y generación de la matriz.
+\end{itemize}
+
+\section{Algoritmos implementados y complejidad}
+Todos están programados a mano (sin \texttt{sorted} ni \texttt{list.sort}); \texttt{sorted} se usa solo para verificar resultados en pruebas y experimentos. La tabla~\ref{tab:comp} resume la complejidad teórica.
+
+\begin{table}[h]
+\centering
+\caption{Complejidad teórica de los algoritmos implementados}\label{tab:comp}
+\small
+\begin{tabular}{@{}p{4.2cm}p{4.3cm}p{2.5cm}p{3cm}@{}}
+\toprule
+\textbf{Algoritmo} & \textbf{Tiempo} & \textbf{Espacio} & \textbf{Uso en el proyecto}\\
+\midrule
+Burbuja & $O(n^2)$; mejor $O(n)$ & $O(1)$ & Laboratorio, benchmark\\
+Inserción & $O(n^2)$; mejor $O(n)$ & $O(1)$ & Laboratorio, benchmark\\
+Selección & $O(n^2)$ & $O(1)$ & Laboratorio, benchmark\\
+Merge Sort & $O(n\log n)$ & $O(n)$ & Orden de alertas y grados\\
+Quick Sort & $O(n\log n)$ prom.; $O(n^2)$ peor & $O(\log n)$ prom. & Laboratorio, benchmark\\
+Búsqueda lineal & $O(n)$ & $O(1)$ & Laboratorio\\
+Búsqueda binaria & $O(\log n)$ & $O(1)$ (recursiva $O(\log n)$) & Laboratorio\\
+Factorial & $O(n)$ & $O(n)$ rec.; $O(1)$ iter. & Laboratorio\\
+Fibonacci recursivo & $\approx O(2^n)$ & $O(n)$ & Laboratorio (límite $n\le 35$)\\
+Fibonacci iter./memo/tab. & $O(n)$ & $O(1)$ / $O(n)$ & Laboratorio\\
+Mochila fraccionaria & $O(n\log n)$ & $O(n)$ & Laboratorio\\
+Selección de actividades & $O(n\log n)$ & $O(n)$ & Laboratorio\\
+Mochila 0/1 (PD) & $O(nW)$ & $O(nW)$ & Laboratorio\\
+Cadena de matrices (PD) & $O(n^3)$ & $O(n^2)$ & Laboratorio\\
+Tabla hash & $O(1)$ prom.; $O(n)$ peor & $O(n)$ & Laboratorio\\
+Árbol binario de búsqueda & $O(h)$ & $O(n)$ & Laboratorio\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Diseño e implementación del detector}
+\subsection{Reglas}
+Cada regla es una función que recorre el grafo y devuelve hallazgos; no calcula riesgo ni redacta texto. Las reglas son:
+\begin{enumerate}
+  \item \texttt{GRADO\_ALTO}: nodo con grado mayor o igual al umbral (por defecto 5).
+  \item \texttt{FRECUENCIA\_ALTA}: conexión con frecuencia mayor o igual al umbral (por defecto 100).
+  \item \texttt{EVENTOS\_REPETIDOS}: conexión con eventos mayores o iguales al umbral (por defecto 50).
+  \item \texttt{CUENTA\_MULTI\_SERVIDOR}: cuenta conectada a al menos 3 servidores distintos (umbral configurable).
+\end{enumerate}
+
+\subsection{Cálculo del riesgo}
+Con valor observado $v$ y umbral $u$, el puntaje es
+\[
+  \text{puntaje} = \min\bigl(100,\ \operatorname{round}(50\,v/u)\bigr),
+\]
+y la regla se activa cuando $v\ge u$ (puntaje $\ge 50$). Niveles: Bajo $[50,60)$, Medio $[60,80)$, Alto $[80,100)$ y Crítico $=100$ ($v\ge 2u$). Es una fórmula educativa definida por el proyecto, no un estándar.
+
+\subsection{Alertas}
+Cada alerta incluye el objetivo (nodo o conexión), la regla activada, los datos que la justifican, el puntaje y nivel, y una recomendación defensiva general. Las alertas se ordenan de mayor a menor riesgo con el Merge Sort propio.
+
+\section{Interfaz}
+La interfaz de Streamlit tiene un menú lateral con siete secciones: Inicio, Constructor de redes, Visualización del grafo, Detector de amenazas, Laboratorio de algoritmos, Estadísticas y comparaciones, y Ayuda \cite{streamlitdocs}. El estado de la red se conserva en \texttt{st.session\_state}. NetworkX calcula las posiciones de los nodos con distribuciones seleccionables \cite{hagberg2008} y Plotly dibuja nodos por tipo, aristas, pesos y alertas resaltadas en rojo \cite{plotly2015}.
+
+\begin{figure}[h]
+\centering
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{2cm}\pendiente{insertar captura real de la visualización del grafo, por ejemplo \texttt{figuras/grafo.png}}\vspace{2cm}}}
+\caption{Visualización del grafo de la red de ejemplo (captura pendiente).}
+\end{figure}
+
+\section{Pruebas realizadas}
+El proyecto contiene 80 funciones de prueba escritas con pytest \cite{pytestdocs}, distribuidas así: algoritmos y estructuras (28), grafo (15), validaciones (12), detector (10), visualización (10) y estadísticas (5). Cubren listas vacías, repetidos, casos límite, colisiones de la tabla hash, importaciones inválidas y las reglas del detector.
+
+\begin{table}[h]
+\centering
+\caption{Resultado de la ejecución de pytest}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Dato} & \textbf{Valor}\\
+\midrule
+Pruebas aprobadas / totales & \pendiente{completar tras ejecutar \texttt{pytest}}\\
+Versión de Python & \pendiente{completar}\\
+Fecha de ejecución & \pendiente{completar}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Experimentos y comparación de algoritmos}
+El experimento (\texttt{analisis/benchmark.py}) usa los mismos datos para todos los algoritmos, generados con semilla fija; cada algoritmo recibe una copia; el tiempo se mide con \texttt{time.perf\_counter()} \cite{pythontime}; cada medición se repite varias veces y el resultado se compara con el orden correcto. Los tipos de datos son aleatorio, ordenado, inverso y con repetidos.
+
+\begin{table}[h]
+\centering
+\caption{Tiempos promedio medidos (segundos). Plantilla: completar con la ejecución real}\label{tab:bench}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Algoritmo} & $n=100$ & $n=500$ & $n=1000$ & $n=2000$ & Correcto\\
+\midrule
+Burbuja      & \pp & \pp & \pp & \pp & \pp\\
+Inserción    & \pp & \pp & \pp & \pp & \pp\\
+Selección    & \pp & \pp & \pp & \pp & \pp\\
+Merge Sort   & \pp & \pp & \pp & \pp & \pp\\
+Quick Sort   & \pp & \pp & \pp & \pp & \pp\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Equipo, procesador y versión de Python utilizados: \pendiente{completar}. Las mediciones dependen del equipo, del tamaño de los datos y de la implementación; no equivalen a la complejidad teórica ni demuestran que un algoritmo sea siempre más rápido.
+
+\section{Resultados y discusión}
+\subsection{Detector sobre la red de ejemplo}
+La red incluida (\texttt{data/ejemplo\_red.json}) es dirigida y tiene 12 nodos, 18 conexiones y 626 eventos registrados. Al ejecutar el detector con los umbrales por defecto se obtuvieron 6 alertas (tabla~\ref{tab:alertas}); esta ejecución se realizó con el código del proyecto.
+
+\begin{table}[h]
+\centering
+\caption{Alertas generadas sobre la red de ejemplo (umbrales por defecto)}\label{tab:alertas}
+\small
+\begin{tabular}{@{}llp{3.3cm}rrl@{}}
+\toprule
+\textbf{ID} & \textbf{Regla} & \textbf{Objetivo} & \textbf{Valor} & \textbf{Umbral} & \textbf{Nivel (puntaje)}\\
+\midrule
+A001 & \texttt{EVENTOS\_REPETIDOS} & pc-03 $\to$ srv-web & 300 & 50 & Crítico (100)\\
+A002 & \texttt{FRECUENCIA\_ALTA} & pc-03 $\to$ srv-web & 180 & 100 & Alto (90)\\
+A003 & \texttt{GRADO\_ALTO} & srv-web & 9 & 5 & Alto (90)\\
+A004 & \texttt{EVENTOS\_REPETIDOS} & cta-invitado $\to$ srv-archivos & 75 & 50 & Medio (75)\\
+A005 & \texttt{CUENTA\_MULTI\_SERVIDOR} & cta-admin & 4 & 3 & Medio (67)\\
+A006 & \texttt{GRADO\_ALTO} & cta-admin & 5 & 5 & Bajo (50)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Discusión}
+Las alertas son coherentes con cómo se diseñó la red de ejemplo: un servidor con muchas conexiones, una conexión con eventos y frecuencia elevados y una cuenta con acceso a varios servidores. Esto no valida el detector frente a tráfico real, porque la red fue construida para ejercitar las reglas. La discusión de los tiempos de ordenamiento se completará con la tabla~\ref{tab:bench} una vez medida: se espera, por la teoría, que los algoritmos cuadráticos crezcan más rápido que Merge Sort y Quick Sort al aumentar $n$, y esa hipótesis debe contrastarse con las mediciones reales.
+
+\section{Limitaciones del detector}
+\begin{itemize}
+  \item Las reglas usan umbrales fijos elegidos por el usuario; no aprenden del comportamiento de la red.
+  \item Solo se analiza la estructura y propiedades de las conexiones, no el contenido del tráfico.
+  \item Pueden aparecer falsos positivos (un servidor central es legítimamente muy conectado) y falsos negativos.
+  \item La fórmula de riesgo es una convención didáctica.
+  \item Los datos son simulados.
+\end{itemize}
+
+\section{Conclusiones}
+\begin{itemize}
+  \item Se implementaron manualmente los algoritmos y estructuras de la unidad y se integraron en un caso de uso coherente.
+  \item El modelo de grafo con lista de adyacencia permitió consultar vecinos y grados de forma eficiente y compararlo con la matriz.
+  \item Las alertas explicables, con regla, datos y recomendación, facilitan interpretar el resultado.
+  \item La separación en módulos permitió probar cada parte de forma independiente.
+\end{itemize}
+
+\section{Recomendaciones}
+\begin{itemize}
+  \item Completar las tablas pendientes con ejecuciones reales y capturas propias antes de la entrega.
+  \item Como ampliación (fuera de los requisitos de la unidad), incorporar recorridos BFS/DFS y caminos mínimos.
+  \item Probar umbrales distintos y redes de mayor tamaño.
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{referencias}
+\addcontentsline{toc}{section}{Referencias bibliográficas}
+
+\appendix
+\section{Formato de importación}
+\begin{lstlisting}
+{
+  "dirigido": true,
+  "nodos": [{"id": "pc-01", "tipo": "equipo"}],
+  "conexiones": [{"origen": "pc-01", "destino": "srv-web",
+                  "peso": 1, "frecuencia": 30, "eventos": 12}]
+}
+\end{lstlisting}
+CSV de nodos: \texttt{id,tipo}. CSV de conexiones: \texttt{origen,destino,peso,frecuencia,eventos}.
+
+\section{Comandos de ejecución (PowerShell)}
+\begin{lstlisting}
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+pytest
+streamlit run app.py
+\end{lstlisting}
+
+\section{Extracto del cálculo de riesgo}
+\begin{lstlisting}
+def calcular_riesgo(valor, umbral):
+    puntaje = min(100, round(50 * valor / umbral))
+    # Critico: 100 | Alto: 80-99 | Medio: 60-79 | Bajo: 50-59
+\end{lstlisting}
+
+\end{document}

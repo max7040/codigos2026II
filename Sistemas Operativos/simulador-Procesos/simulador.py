@@ -48,6 +48,9 @@ class ResultadoSimulacion:
     promedio_respuesta: float
     tiempo_total: int
     utilizacion_cpu: float             # porcentaje (0 a 100)
+    tiempo_cpu_ocupada: int            # unidades con la CPU trabajando
+    tiempo_cpu_inactiva: int           # unidades con la CPU sin proceso
+    procesos_completados: int          # cantidad de procesos que terminaron
 
 
 @dataclass
@@ -128,6 +131,10 @@ def _construir_resultado(copias: List[Proceso],
     for proceso in copias:
         proceso.calcular_metricas()
 
+    tiempo_total = calcular_tiempo_total(segmentos)
+    cpu_ocupada = sum(fin - inicio for id_proceso, inicio, fin in segmentos
+                      if id_proceso is not None)
+
     return ResultadoSimulacion(
         procesos=copias,
         segmentos=segmentos,
@@ -135,8 +142,11 @@ def _construir_resultado(copias: List[Proceso],
         promedio_espera=_promedio([p.espera for p in copias]),
         promedio_retorno=_promedio([p.retorno for p in copias]),
         promedio_respuesta=_promedio([p.respuesta for p in copias]),
-        tiempo_total=calcular_tiempo_total(segmentos),
+        tiempo_total=tiempo_total,
         utilizacion_cpu=calcular_utilizacion(segmentos),
+        tiempo_cpu_ocupada=cpu_ocupada,
+        tiempo_cpu_inactiva=tiempo_total - cpu_ocupada,
+        procesos_completados=sum(1 for p in copias if p.finalizacion is not None),
     )
 
 

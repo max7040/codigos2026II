@@ -86,6 +86,8 @@ class VentanaPasoAPaso:
         self.var_prom_respuesta = tk.StringVar(value="-")
         self.var_tiempo_total = tk.StringVar(value="-")
         self.var_utilizacion = tk.StringVar(value="-")
+        self.var_cpu = tk.StringVar(value="-")
+        self.var_completados = tk.StringVar(value="-")
 
         estadisticas = [
             ("Promedio de espera (WT):", self.var_prom_espera),
@@ -93,17 +95,18 @@ class VentanaPasoAPaso:
             ("Promedio de respuesta (RT):", self.var_prom_respuesta),
             ("Tiempo total:", self.var_tiempo_total),
             ("Utilización de CPU:", self.var_utilizacion),
+            ("CPU ocupada / inactiva:", self.var_cpu),
+            ("Procesos completados:", self.var_completados),
         ]
         cuadro = ttk.Frame(marco)
         cuadro.pack(fill="x", pady=(6, 0))
         for i, (texto, variable) in enumerate(estadisticas):
-            fila = i // 3
-            columna = (i % 3) * 2
+            fila = i // 4
+            columna = (i % 4) * 2
             ttk.Label(cuadro, text=texto).grid(row=fila, column=columna,
                                                sticky="w", padx=(0, 4), pady=1)
             ttk.Label(cuadro, textvariable=variable, style="Valor.TLabel").grid(
-                row=fila, column=columna + 1, sticky="w", padx=(0, 30), pady=1)
-
+                row=fila, column=columna + 1, sticky="w", padx=(0, 24), pady=1)
     def _crear_botones(self):
         marco = ttk.Frame(self.ventana, padding=(10, 6))
         marco.pack(side="bottom", fill="x")
@@ -146,6 +149,9 @@ class VentanaPasoAPaso:
         self.etiqueta_cpu.pack(pady=(0, 4))
         self.var_tramo = tk.StringVar()
         ttk.Label(marco, textvariable=self.var_tramo, anchor="center").pack(fill="x")
+        self.var_cpu_acumulada = tk.StringVar()
+        ttk.Label(marco, textvariable=self.var_cpu_acumulada, anchor="center",
+                  style="Valor.TLabel").pack(fill="x", pady=(2, 0))
 
     def _crear_panel_listos(self, padre):
         marco = ttk.LabelFrame(padre, text="PROCESOS LISTOS (tiempo restante)",
@@ -246,6 +252,14 @@ class VentanaPasoAPaso:
             self.var_tramo.set(f"Ejecuta desde t={paso.tiempo} hasta t={paso.fin} "
                                f"({paso.fin - paso.tiempo} unidades)")
 
+        # CPU acumulada hasta el final de este paso (la misma parte que muestra el Gantt)
+        segmentos = simulador.segmentos_del_paso(self.simulacion, self.indice)
+        ocupada = sum(fin - inicio for id_proceso, inicio, fin in segmentos
+                      if id_proceso is not None)
+        inactiva = sum(fin - inicio for id_proceso, inicio, fin in segmentos
+                       if id_proceso is None)
+        self.var_cpu_acumulada.set(f"CPU ocupada: {ocupada} | inactiva: {inactiva}")
+
     def _mostrar_listos(self, paso):
         self._vaciar_tabla(self.tabla_listos)
         for id_proceso, restante, prioridad, llegada in paso.listos:
@@ -261,12 +275,14 @@ class VentanaPasoAPaso:
         futuros = ", ".join(f"{i} (t={t})" for i, t in paso.futuros) or "ninguno"
         terminados = ", ".join(paso.terminados) or "ninguno"
         cola = " → ".join(paso.cola) if paso.cola else "vacía"
+        total = len(self.simulacion.resultado.procesos)
 
         self.var_cola.set(f"Cola circular (frente → final): {cola}")
         self.var_nuevos.set(f"Llegadas desde el paso anterior: {nuevos}")
         self.var_futuros.set(f"Aún no llegan: {futuros}")
-        self.var_terminados.set(f"Terminados: {terminados}")
-
+        self.var_terminados.set(
+            f"Procesos completados: {len(paso.terminados)} de {total}\n"
+            f"Terminados: {terminados}")    
     def _mostrar_decision(self, paso):
         if paso.es_final:
             decision = f"Simulación finalizada en t={paso.tiempo}."
@@ -292,7 +308,7 @@ class VentanaPasoAPaso:
         self._vaciar_tabla(self.tabla_resultados)
         variables = (self.var_prom_espera, self.var_prom_retorno,
                      self.var_prom_respuesta, self.var_tiempo_total,
-                     self.var_utilizacion)
+                     self.var_utilizacion, self.var_cpu, self.var_completados)
 
         if not paso.es_final:
             for variable in variables:
@@ -309,6 +325,10 @@ class VentanaPasoAPaso:
         self.var_prom_respuesta.set(f"{resultado.promedio_respuesta:.2f}")
         self.var_tiempo_total.set(str(resultado.tiempo_total))
         self.var_utilizacion.set(f"{resultado.utilizacion_cpu:.2f} %")
+        self.var_cpu.set(f"{resultado.tiempo_cpu_ocupada} / "
+                         f"{resultado.tiempo_cpu_inactiva} unidades")
+        self.var_completados.set(f"{resultado.procesos_completados} de "
+                                 f"{len(resultado.procesos)}")
 
     def _actualizar_botones(self):
         ultimo = len(self.simulacion.pasos) - 1
