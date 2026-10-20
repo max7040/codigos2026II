@@ -10,11 +10,7 @@ ALTURA_BARRA = 0.6
 
 
 def _asignar_colores(segmentos, ids_colores=None):
-    """
-    Un color por proceso (el mismo ID siempre recibe el mismo color).
-    Si se envía 'ids_colores' (todos los procesos), los colores no cambian
-    aunque el Gantt todavía no muestre algunos procesos.
-    """
+    
     if ids_colores is not None:
         ids = sorted(set(ids_colores))
     else:
@@ -24,11 +20,7 @@ def _asignar_colores(segmentos, ids_colores=None):
 
 
 def _clasificar_segmentos(segmentos):
-    """
-    Para cada segmento devuelve (es_reanudacion, es_interrumpido):
-      - es_reanudacion: el proceso ya apareció en un segmento anterior.
-      - es_interrumpido: el proceso aparece de nuevo en un segmento posterior.
-    """
+   
     resultado = []
     for i, (id_proceso, _, _) in enumerate(segmentos):
         if id_proceso is None:
@@ -107,12 +99,7 @@ def _agregar_leyenda(eje, con_instante=False):
 
 def dibujar_en_figura(figura, segmentos, titulo="Diagrama de Gantt",
                       tiempo_maximo=None, tiempo_actual=None, ids_colores=None):
-    """
-    Dibuja el Gantt dentro de una figura existente (la limpia antes).
-      tiempo_maximo: si se indica, el eje X llega hasta ese tiempo.
-      tiempo_actual: si se indica, marca ese instante con una línea punteada.
-      ids_colores:   IDs de todos los procesos, para que los colores no cambien.
-    """
+    
     figura.clear()
     eje = figura.add_subplot(111)
 
@@ -147,10 +134,7 @@ def crear_figura(segmentos, titulo="Diagrama de Gantt"):
 
 
 def insertar_en_tkinter(figura, contenedor):
-    """
-    Inserta la figura dentro de un contenedor de Tkinter.
-    Devuelve el widget creado (para poder destruirlo al redibujar).
-    """
+   
     canvas = FigureCanvasTkAgg(figura, master=contenedor)
     canvas.draw()
     widget = canvas.get_tk_widget()
@@ -159,11 +143,7 @@ def insertar_en_tkinter(figura, contenedor):
 
 
 class GanttInteractivo:
-    """
-    Gantt que se actualiza sobre el mismo gráfico (lo usa la simulación
-    paso a paso). Cada llamada a actualizar() redibuja los segmentos
-    acumulados que recibe.
-    """
+    
 
     def __init__(self, contenedor, ids_procesos):
         self.ids_procesos = list(ids_procesos)

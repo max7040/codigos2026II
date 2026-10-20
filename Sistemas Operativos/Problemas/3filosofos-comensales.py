@@ -3,31 +3,48 @@ import time
 import random
 
 NUM_FILOSOFOS = 5
-tenedores = [threading.Lock() for _ in range(NUM_FILOSOFOS)]
+RONDAS = 3
 
-def filosofo(id_fil):
-    izq = id_fil
-    der = (id_fil + 1) % NUM_FILOSOFOS
-    
-  
-    primer_tenedor = min(izq, der)
-    segundo_tenedor = max(izq, der)
+tenedores = [threading.Semaphore(1) for _ in range(NUM_FILOSOFOS)]   # Un semáforo por tenedor
+comidas = [0] * NUM_FILOSOFOS                                        # Dato compartido: veces que comió cada uno
 
-    for _ in range(3):
-        print(f"Filósofo {id_fil} está pensando.")
-        time.sleep(random.uniform(0.1, 0.3))
 
-        print(f"Filósofo {id_fil} intenta comer.")
-        with tenedores[primer_tenedor]:
-            with tenedores[segundo_tenedor]:
-              
-                print(f"--> Filósofo {id_fil} está COMIENDO.")
-                time.sleep(random.uniform(0.1, 0.3))
-        
-        print(f"Filósofo {id_fil} terminó de comer y libera tenedores.")
+def filosofo(id_filosofo):
+    izq = id_filosofo
+    der = (id_filosofo + 1) % NUM_FILOSOFOS
+
+    # Jerarquía de recursos: siempre se pide primero el tenedor de menor número
+    primero = min(izq, der)
+    segundo = max(izq, der)
+
+    for _ in range(RONDAS):
+        print(f"[FILÓSOFO {id_filosofo}] Pensando.")
+        time.sleep(random.uniform(0.2, 0.6))
+
+        print(f"[FILÓSOFO {id_filosofo}] Tiene hambre. Pide tenedor {primero} y luego tenedor {segundo}.")
+        tenedores[primero].acquire()
+        tenedores[segundo].acquire()
+
+        print(f"--> [FILÓSOFO {id_filosofo}] COMIENDO con tenedores {primero} y {segundo}.")
+        time.sleep(random.uniform(0.3, 0.8))
+        comidas[id_filosofo] += 1
+        print(f"<-- [FILÓSOFO {id_filosofo}] Terminó de comer.")
+
+        tenedores[segundo].release()
+        tenedores[primero].release()
+
 
 if __name__ == "__main__":
-    print("\n--- INICIO: FILÓSOFOS COMENSALES ---")
-    filos = [threading.Thread(target=filosofo, args=(i,)) for i in range(NUM_FILOSOFOS)]
-    for f in filos: f.start()
-    for f in filos: f.join()
+    print("=== INICIO DE LA SIMULACIÓN DE LOS FILÓSOFOS COMENSALES ===")
+    hilos = []
+
+    for i in range(NUM_FILOSOFOS):
+        t = threading.Thread(target=filosofo, args=(i,))
+        hilos.append(t)
+        t.start()
+
+    for t in hilos:
+        t.join()
+
+    print(f"Comidas por filósofo: {comidas}")
+    print("=== FIN DE LA SIMULACIÓN (sin interbloqueo) ===")
