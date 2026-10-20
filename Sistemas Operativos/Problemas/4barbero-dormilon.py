@@ -13,29 +13,28 @@ mutex_sillas = threading.Lock()
 def barbero():
     while True:
         print("Barbero durmiendo en su sillón...")
-        cliente_listo.acquire() # Espera a que llegue un cliente
+        cliente_listo.acquire()
         
         with mutex_sillas:
-            barbero_listo.release() # Indica que está listo para atender
-        
+            barbero_listo.release() 
         print("--> Barbero cortando el cabello...")
         time.sleep(0.4)
         print("Barbero terminó el corte.")
 
 def cliente(id_c):
     time.sleep(random.uniform(0.1, 0.5))
+    entra = False
     with mutex_sillas:
         if cola_clientes.qsize() < SILLAS_ESPERA:
             cola_clientes.put(id_c)
-            print(f"Cliente {id_c} se sienta en la sala de espera. Sillas ocupadas: {cola_clientes.qsize()}")
-            cliente_listo.release() # Despierta al barbero
-            mutex_sillas.release()
-            
-            barbero_listo.acquire() # Espera su turno con el barbero
-            print(f"Cliente {id_c} está siendo atendido.")
+            print(f"Cliente {id_c} en sala de espera.")
+            cliente_listo.release()
+            entra = True
         else:
-            print(f"x Cliente {id_c} se va porque la barbería está llena.")
-            mutex_sillas.release()
+            print(f"x Cliente {id_c} se va (lleno).")
+    if entra:
+        barbero_listo.acquire()
+        print(f"Cliente {id_c} atendido.")
 
 if __name__ == "__main__":
     print("\n--- INICIO: BARBERO DORMILÓN ---")

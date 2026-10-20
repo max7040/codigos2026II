@@ -1,17 +1,3 @@
-"""
-gantt.py
-Genera el diagrama de Gantt con Matplotlib y lo integra en Tkinter.
-Solo dibuja los segmentos que recibe; NO contiene lógica de planificación.
-
-Cómo se representa cada cosa:
-  - Ejecución normal ........ barra de color con el ID del proceso
-  - Reanudación ............. barra rayada (el proceso ya se había ejecutado antes)
-  - Interrupción ............ triángulo rojo al final del segmento
-                              (el proceso volverá a ejecutarse más adelante)
-  - CPU inactiva ............ barra gris punteada
-  - Instante actual ......... línea vertical punteada (solo en paso a paso)
-"""
-
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch

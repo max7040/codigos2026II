@@ -1,9 +1,4 @@
-"""
-interfaz_pasos.py
-Ventana de la simulación paso a paso.
-Solo muestra los pasos que ya registró el simulador: no contiene lógica
-de planificación.
-"""
+
 
 import tkinter as tk
 from tkinter import ttk
@@ -20,18 +15,18 @@ COLUMNAS_RESULTADOS = ("ID", "Llegada", "Ejecución", "Prioridad", "Inicio",
 class VentanaPasoAPaso:
     def __init__(self, raiz, simulacion):
         self.simulacion = simulacion
-        self.indice = 0                      # paso que se está mostrando
+        self.indice = 0                     
 
         self.ventana = tk.Toplevel(raiz)
         self.ventana.title("Simulación paso a paso")
         self.ventana.geometry("1250x820")
         self.ventana.minsize(1100, 700)
         try:
-            self.ventana.state("zoomed")     # maximizada en Windows
+            self.ventana.state("zoomed")     
         except tk.TclError:
             pass
 
-        # El orden importa: lo que se empaqueta abajo primero queda más abajo
+      
         self._crear_encabezado()
         self._crear_resultados()
         self._crear_botones()

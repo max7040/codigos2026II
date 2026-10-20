@@ -1,13 +1,3 @@
-"""
-pasos.py
-Estructuras de datos de la simulación paso a paso.
-
-  - Paso: una "foto" del sistema en un instante en que el algoritmo tomó
-    una decisión (qué proceso usa la CPU y por qué).
-  - RegistroPasos: los algoritmos lo usan para anotar cada decisión MIENTRAS
-    se ejecutan, así la explicación sale de la lógica real del algoritmo.
-"""
-
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 

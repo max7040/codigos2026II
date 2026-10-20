@@ -1,14 +1,3 @@
-"""
-cargador.py
-Lee los procesos desde un archivo Excel (.xlsx).
-
-Formato esperado (primera hoja, en este orden):
-    ID | Llegada | Ejecución | Prioridad
-
-La primera fila puede ser un encabezado (se detecta automáticamente).
-Aplica las mismas validaciones que el formulario de la interfaz.
-"""
-
 from typing import List
 
 from openpyxl import load_workbook

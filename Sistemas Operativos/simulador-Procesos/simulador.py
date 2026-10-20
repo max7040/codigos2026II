@@ -1,12 +1,3 @@
-"""
-simulador.py
-Intermediario entre la interfaz y los algoritmos.
-
-Recibe los procesos, el algoritmo elegido y el quantum, y devuelve un
-ResultadoSimulacion con todo lo que la interfaz necesita mostrar.
-También ofrece la simulación paso a paso (simular_paso_a_paso).
-"""
-
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 

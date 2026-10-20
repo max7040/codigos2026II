@@ -9,7 +9,7 @@ def filosofo(id_fil):
     izq = id_fil
     der = (id_fil + 1) % NUM_FILOSOFOS
     
-    # Jerarquía estricta para evitar interbloqueo (Deadlock)
+  
     primer_tenedor = min(izq, der)
     segundo_tenedor = max(izq, der)
 
@@ -20,7 +20,7 @@ def filosofo(id_fil):
         print(f"Filósofo {id_fil} intenta comer.")
         with tenedores[primer_tenedor]:
             with tenedores[segundo_tenedor]:
-                # --- SECCIÓN CRÍTICA (COMIENDO) ---
+              
                 print(f"--> Filósofo {id_fil} está COMIENDO.")
                 time.sleep(random.uniform(0.1, 0.3))
         

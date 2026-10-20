@@ -7,36 +7,36 @@ class LectoresEscritoresJustos:
         self.rmutex = threading.Lock()
         self.e = threading.Lock()
         self.rcount = 0
-        self.turn = threading.Lock() # Control FIFO para evitar inanición
+        self.turn = threading.Lock() 
 
     def lector(self, id_l):
         with self.turn:
-            pass # Asegura orden FIFO aproximado entre lectores y escritores
+            pass 
         with self.rmutex:
             self.rcount += 1
             if self.rcount == 1:
-                self.e.acquire() # El primer lector bloquea a los escritores
+                self.e.acquire() 
         
-        # --- SECCIÓN CRÍTICA (LECTURA) ---
+      
         print(f"[Lector {id_l}] Leyendo recurso...")
         time.sleep(0.2)
         
         with self.rmutex:
             self.rcount -= 1
             if self.rcount == 0:
-                self.e.release() # El último lector libera el recurso
+                self.e.release() 
 
     def escritor(self, id_e):
         with self.turn:
-            self.e.acquire() # Bloquea el recurso exclusivo para el escritor
+            self.e.acquire() 
         
-        # --- SECCIÓN CRÍTICA (ESCRITURA) ---
+
         print(f"=== [Escritor {id_e}] Escribiendo en el recurso... ===")
         time.sleep(0.3)
         
         self.e.release()
 
-# Ejecución de prueba
+
 if __name__ == "__main__":
     print("\n--- INICIO: LECTORES - ESCRITORES ---")
     le = LectoresEscritoresJustos()
