@@ -1,0 +1,55 @@
+
+=== BENCHMARK DE ORDENAMIENTO (tiempo promedio en milisegundos) ===
+
+--- Caso: ALEATORIA ---
+Algoritmo \ n                      1000       5000      10000      50000     100000
+Burbuja            O(n^2)         8.517    277.725   1080.678         --         --
+Insercion          O(n^2)         3.702     87.506    352.768         --         --
+Seleccion          O(n^2)         5.084    129.108    528.652         --         --
+QuickSort pivote final            0.217      1.482      3.047         --         --
+Merge Sort     O(n log n)         0.288      1.815      4.136     25.511     49.408
+Quick Sort med3 O(nlog n)         0.204      1.279      2.921     16.207     32.636
+std::sort (referencia)            0.189      1.243      2.534     13.270     26.424
+
+--- Caso: YA ORDENADA ---
+Algoritmo \ n                      1000       5000      10000      50000     100000
+Burbuja            O(n^2)         0.006      0.051      0.097         --         --
+Insercion          O(n^2)         0.022      0.129      0.209         --         --
+Seleccion          O(n^2)         5.608    141.898    565.355         --         --
+QuickSort pivote final            2.811     77.721    175.746         --         --
+Merge Sort     O(n log n)         0.191      1.139      2.498     12.522     26.957
+Quick Sort med3 O(nlog n)         0.072      0.440      1.059      6.725     14.057
+std::sort (referencia)            0.080      0.478      0.972      5.037     11.311
+
+--- Caso: INVERSA ---
+Algoritmo \ n                      1000       5000      10000      50000     100000
+Burbuja            O(n^2)        11.373    259.798   1040.990         --         --
+Insercion          O(n^2)         7.203    181.258    752.315         --         --
+Seleccion          O(n^2)         5.491    144.434    527.505         --         --
+QuickSort pivote final            3.210     92.256    301.670         --         --
+Merge Sort     O(n log n)         0.219      1.190      2.515     12.819     28.476
+Quick Sort med3 O(nlog n)         0.082      0.534      1.183      6.483     15.612
+std::sort (referencia)            0.117      0.596      0.994      4.715     10.965
+
+('--' = no se ejecuta por ser demasiado lento; use el modo completo para incluirlo)
+Verificacion de orden correcto en todas las corridas: OK
+
+=== DISTANCIA DE EDICION: recursiva pura vs programacion dinamica ===
+(dos palabras totalmente distintas = peor caso de la recursion)
+
+longitud    llamadas rec.   recursiva (ms)        DP (ms)    veces mas
+       4              481           0.0038        0.00007          52x
+       6            13483           0.0338        0.00011         316x
+       8           398593           0.8480        0.00016        5415x
+      10         12146179          27.3202        0.00024      113928x
+      12        377393953        1008.1007        0.00035     2874928x
+
+=== BUSQUEDA: 20000 consultas sobre 6625 palabras (50% existen, 50% no) ===
+
+Metodo                             total (ms)  por consulta (us)   halladas
+Busqueda lineal   O(n)                191.507             9.5754      10000
+Busqueda binaria  O(log n)              4.083             0.2042      10000
+Tabla hash        O(1)                  1.021             0.0510      10000
+Trie              O(m)                  1.350             0.0675      10000
+
+Resultados guardados en resultados_benchmark.csv
