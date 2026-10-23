@@ -1,8 +1,4 @@
-// benchmark.hpp - Mediciones de tiempo reales para el informe y la exposición (EV1).
-//   1) Ordenamiento: 6 algoritmos + std::sort de referencia, 3 casos (aleatoria, ordenada, inversa)
-//   2) Distancia de edición: recursiva pura vs programación dinámica
-//   3) Búsqueda: lineal vs binaria vs tabla hash vs Trie
-// Todos los resultados se guardan también en resultados_benchmark.csv (para graficar).
+
 #pragma once
 #include <cstdio>
 #include <random>

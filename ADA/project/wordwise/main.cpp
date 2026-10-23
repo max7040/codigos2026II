@@ -1,10 +1,4 @@
-// main.cpp - WordWise: corrector ortográfico y autocompletado
-// Proyecto del curso Análisis y Diseño de Algoritmos (SIS214) - Unidad I
-//
-// Compilar:  g++ -O2 -std=c++17 main.cpp -o wordwise
-// Ejecutar:  ./wordwise                (menú interactivo; requiere diccionario.txt en la misma carpeta)
-//            ./wordwise --benchmark    (ejecuta todos los benchmarks y guarda resultados_benchmark.csv)
-//            ./wordwise --benchmark --completo   (incluye los O(n^2) con n = 50 000 y 100 000: tarda minutos)
+
 #include <iostream>
 #include <iomanip>
 #include <string>

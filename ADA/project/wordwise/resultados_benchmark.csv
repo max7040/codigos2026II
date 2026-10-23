@@ -1,96 +1,66 @@
 categoria,algoritmo,caso,n,ms
-ordenamiento,Burbuja            O(n^2),ALEATORIA,1000,39.5469
-ordenamiento,Burbuja            O(n^2),ALEATORIA,5000,1026.28
-ordenamiento,Burbuja            O(n^2),ALEATORIA,10000,4082.34
-ordenamiento,Insercion          O(n^2),ALEATORIA,1000,21.856
-ordenamiento,Insercion          O(n^2),ALEATORIA,5000,536.304
-ordenamiento,Insercion          O(n^2),ALEATORIA,10000,2125.45
-ordenamiento,Seleccion          O(n^2),ALEATORIA,1000,17.6491
-ordenamiento,Seleccion          O(n^2),ALEATORIA,5000,427.188
-ordenamiento,Seleccion          O(n^2),ALEATORIA,10000,1713.75
-ordenamiento,QuickSort pivote final,ALEATORIA,1000,0.9704
-ordenamiento,QuickSort pivote final,ALEATORIA,5000,5.93332
-ordenamiento,QuickSort pivote final,ALEATORIA,10000,11.9179
-ordenamiento,Merge Sort     O(n log n),ALEATORIA,1000,1.6152
-ordenamiento,Merge Sort     O(n log n),ALEATORIA,5000,9.7058
-ordenamiento,Merge Sort     O(n log n),ALEATORIA,10000,21.1569
-ordenamiento,Merge Sort     O(n log n),ALEATORIA,50000,124.91
-ordenamiento,Merge Sort     O(n log n),ALEATORIA,100000,262.953
-ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,1000,0.83384
-ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,5000,4.92722
-ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,10000,10.569
-ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,50000,58.1868
-ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,100000,119.082
-ordenamiento,std::sort (referencia),ALEATORIA,1000,0.78302
-ordenamiento,std::sort (referencia),ALEATORIA,5000,4.50104
-ordenamiento,std::sort (referencia),ALEATORIA,10000,9.27822
-ordenamiento,std::sort (referencia),ALEATORIA,50000,48.7336
-ordenamiento,std::sort (referencia),ALEATORIA,100000,99.2204
-ordenamiento,Burbuja            O(n^2),YA ORDENADA,1000,0.05358
-ordenamiento,Burbuja            O(n^2),YA ORDENADA,5000,0.21556
-ordenamiento,Burbuja            O(n^2),YA ORDENADA,10000,0.42774
-ordenamiento,Insercion          O(n^2),YA ORDENADA,1000,0.16336
-ordenamiento,Insercion          O(n^2),YA ORDENADA,5000,0.79134
-ordenamiento,Insercion          O(n^2),YA ORDENADA,10000,1.94838
-ordenamiento,Seleccion          O(n^2),YA ORDENADA,1000,18.445
-ordenamiento,Seleccion          O(n^2),YA ORDENADA,5000,396.632
-ordenamiento,Seleccion          O(n^2),YA ORDENADA,10000,1560.7
-ordenamiento,QuickSort pivote final,YA ORDENADA,1000,17.9461
-ordenamiento,QuickSort pivote final,YA ORDENADA,5000,331.878
-ordenamiento,QuickSort pivote final,YA ORDENADA,10000,961.008
-ordenamiento,Merge Sort     O(n log n),YA ORDENADA,1000,1.46372
-ordenamiento,Merge Sort     O(n log n),YA ORDENADA,5000,8.40686
-ordenamiento,Merge Sort     O(n log n),YA ORDENADA,10000,17.9417
-ordenamiento,Merge Sort     O(n log n),YA ORDENADA,50000,99.9482
-ordenamiento,Merge Sort     O(n log n),YA ORDENADA,100000,208.538
-ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,1000,0.42186
-ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,5000,2.80658
-ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,10000,6.34756
-ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,50000,35.4186
-ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,100000,75.1658
-ordenamiento,std::sort (referencia),YA ORDENADA,1000,0.53522
-ordenamiento,std::sort (referencia),YA ORDENADA,5000,2.87324
-ordenamiento,std::sort (referencia),YA ORDENADA,10000,5.94196
-ordenamiento,std::sort (referencia),YA ORDENADA,50000,29.1969
-ordenamiento,std::sort (referencia),YA ORDENADA,100000,56.7609
-ordenamiento,Burbuja            O(n^2),INVERSA,1000,56.6441
-ordenamiento,Burbuja            O(n^2),INVERSA,5000,1374.92
-ordenamiento,Burbuja            O(n^2),INVERSA,10000,5352.99
-ordenamiento,Insercion          O(n^2),INVERSA,1000,44.5366
-ordenamiento,Insercion          O(n^2),INVERSA,5000,1064.57
-ordenamiento,Insercion          O(n^2),INVERSA,10000,4167.97
-ordenamiento,Seleccion          O(n^2),INVERSA,1000,18.5409
-ordenamiento,Seleccion          O(n^2),INVERSA,5000,468.144
-ordenamiento,Seleccion          O(n^2),INVERSA,10000,1834.29
-ordenamiento,QuickSort pivote final,INVERSA,1000,18.0337
-ordenamiento,QuickSort pivote final,INVERSA,5000,475.949
-ordenamiento,QuickSort pivote final,INVERSA,10000,1773.01
-ordenamiento,Merge Sort     O(n log n),INVERSA,1000,1.42222
-ordenamiento,Merge Sort     O(n log n),INVERSA,5000,8.47332
-ordenamiento,Merge Sort     O(n log n),INVERSA,10000,18.2609
-ordenamiento,Merge Sort     O(n log n),INVERSA,50000,103.84
-ordenamiento,Merge Sort     O(n log n),INVERSA,100000,217.631
-ordenamiento,Quick Sort med3 O(nlog n),INVERSA,1000,0.5178
-ordenamiento,Quick Sort med3 O(nlog n),INVERSA,5000,3.09022
-ordenamiento,Quick Sort med3 O(nlog n),INVERSA,10000,6.55296
-ordenamiento,Quick Sort med3 O(nlog n),INVERSA,50000,37.2951
-ordenamiento,Quick Sort med3 O(nlog n),INVERSA,100000,80.1262
-ordenamiento,std::sort (referencia),INVERSA,1000,0.47064
-ordenamiento,std::sort (referencia),INVERSA,5000,2.84582
-ordenamiento,std::sort (referencia),INVERSA,10000,6.379
-ordenamiento,std::sort (referencia),INVERSA,50000,34.1031
-ordenamiento,std::sort (referencia),INVERSA,100000,61.0087
-distancia,recursiva,peor_caso,4,0.008
-distancia,programacion_dinamica,peor_caso,4,0.0009507
-distancia,recursiva,peor_caso,6,0.1577
-distancia,programacion_dinamica,peor_caso,6,0.002623
-distancia,recursiva,peor_caso,8,4.3799
-distancia,programacion_dinamica,peor_caso,8,0.00294105
-distancia,recursiva,peor_caso,10,135.562
-distancia,programacion_dinamica,peor_caso,10,0.0041977
-distancia,recursiva,peor_caso,12,4162.5
-distancia,programacion_dinamica,peor_caso,12,0.0057732
-busqueda,Busqueda lineal   O(n),50pct_existen,20000,1591.41
-busqueda,Busqueda binaria  O(log n),50pct_existen,20000,13.7745
-busqueda,Tabla hash        O(1),50pct_existen,20000,2.6319
-busqueda,Trie              O(m),50pct_existen,20000,2.31227
+ordenamiento,Burbuja            O(n^2),ALEATORIA,1000,39.9494
+ordenamiento,Burbuja            O(n^2),ALEATORIA,5000,1039.28
+ordenamiento,Burbuja            O(n^2),ALEATORIA,10000,4102.25
+ordenamiento,Burbuja            O(n^2),ALEATORIA,50000,100537
+ordenamiento,Burbuja            O(n^2),ALEATORIA,100000,406406
+ordenamiento,Insercion          O(n^2),ALEATORIA,1000,22.3914
+ordenamiento,Insercion          O(n^2),ALEATORIA,5000,564.648
+ordenamiento,Insercion          O(n^2),ALEATORIA,10000,2198.86
+ordenamiento,Insercion          O(n^2),ALEATORIA,50000,52667.1
+ordenamiento,Insercion          O(n^2),ALEATORIA,100000,209965
+ordenamiento,Seleccion          O(n^2),ALEATORIA,1000,18.087
+ordenamiento,Seleccion          O(n^2),ALEATORIA,5000,434.511
+ordenamiento,Seleccion          O(n^2),ALEATORIA,10000,1766.47
+ordenamiento,Seleccion          O(n^2),ALEATORIA,50000,44598.4
+ordenamiento,Seleccion          O(n^2),ALEATORIA,100000,178322
+ordenamiento,QuickSort pivote final,ALEATORIA,1000,0.86794
+ordenamiento,QuickSort pivote final,ALEATORIA,5000,5.96576
+ordenamiento,QuickSort pivote final,ALEATORIA,10000,12.1172
+ordenamiento,Merge Sort     O(n log n),ALEATORIA,1000,1.59882
+ordenamiento,Merge Sort     O(n log n),ALEATORIA,5000,9.99086
+ordenamiento,Merge Sort     O(n log n),ALEATORIA,10000,22.5925
+ordenamiento,Merge Sort     O(n log n),ALEATORIA,50000,125.277
+ordenamiento,Merge Sort     O(n log n),ALEATORIA,100000,269.39
+ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,1000,0.88328
+ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,5000,5.03596
+ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,10000,10.6278
+ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,50000,59.0463
+ordenamiento,Quick Sort med3 O(nlog n),ALEATORIA,100000,122.06
+ordenamiento,std::sort (referencia),ALEATORIA,1000,0.79914
+ordenamiento,std::sort (referencia),ALEATORIA,5000,4.57172
+ordenamiento,std::sort (referencia),ALEATORIA,10000,9.34782
+ordenamiento,std::sort (referencia),ALEATORIA,50000,49.2132
+ordenamiento,std::sort (referencia),ALEATORIA,100000,100.53
+ordenamiento,Burbuja            O(n^2),YA ORDENADA,1000,0.06226
+ordenamiento,Burbuja            O(n^2),YA ORDENADA,5000,0.21696
+ordenamiento,Burbuja            O(n^2),YA ORDENADA,10000,0.39718
+ordenamiento,Burbuja            O(n^2),YA ORDENADA,50000,1.93193
+ordenamiento,Burbuja            O(n^2),YA ORDENADA,100000,3.92523
+ordenamiento,Insercion          O(n^2),YA ORDENADA,1000,0.1842
+ordenamiento,Insercion          O(n^2),YA ORDENADA,5000,0.77952
+ordenamiento,Insercion          O(n^2),YA ORDENADA,10000,1.64798
+ordenamiento,Insercion          O(n^2),YA ORDENADA,50000,7.5365
+ordenamiento,Insercion          O(n^2),YA ORDENADA,100000,15.0527
+ordenamiento,Seleccion          O(n^2),YA ORDENADA,1000,16.9384
+ordenamiento,Seleccion          O(n^2),YA ORDENADA,5000,410.624
+ordenamiento,Seleccion          O(n^2),YA ORDENADA,10000,1629.92
+ordenamiento,Seleccion          O(n^2),YA ORDENADA,50000,39878.9
+ordenamiento,Seleccion          O(n^2),YA ORDENADA,100000,156258
+ordenamiento,QuickSort pivote final,YA ORDENADA,1000,18.3007
+ordenamiento,QuickSort pivote final,YA ORDENADA,5000,334.304
+ordenamiento,QuickSort pivote final,YA ORDENADA,10000,982.18
+ordenamiento,Merge Sort     O(n log n),YA ORDENADA,1000,1.4196
+ordenamiento,Merge Sort     O(n log n),YA ORDENADA,5000,8.66538
+ordenamiento,Merge Sort     O(n log n),YA ORDENADA,10000,18.277
+ordenamiento,Merge Sort     O(n log n),YA ORDENADA,50000,103.896
+ordenamiento,Merge Sort     O(n log n),YA ORDENADA,100000,226.029
+ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,1000,0.44102
+ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,5000,2.78622
+ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,10000,5.90692
+ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,50000,37.146
+ordenamiento,Quick Sort med3 O(nlog n),YA ORDENADA,100000,80.2133
+ordenamiento,std::sort (referencia),YA ORDENADA,1000,0.5308
+ordenamiento,std::sort (referencia),YA ORDENADA,5000,2.95646
+ordenamiento,std::sort (referencia),YA ORDENADA,10000,6.08832
+ordenamiento,std::sort (referencia),YA ORDENADA

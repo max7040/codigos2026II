@@ -1,7 +1,4 @@
-// heap.hpp - Cola de prioridad (heap binario) usada para quedarse con las K mejores sugerencias.
-// Se guarda un heap de tamaño máximo K cuya RAÍZ es la peor de las elegidas.
-// Cada candidato nuevo se compara sólo con la raíz: O(log K) por candidato,
-// total O(N log K) en vez de ordenar los N candidatos (O(N log N)).
+
 #pragma once
 #include <vector>
 #include "sorting.hpp"

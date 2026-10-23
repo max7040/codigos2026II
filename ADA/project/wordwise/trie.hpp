@@ -1,6 +1,4 @@
-// trie.hpp - Árbol de prefijos (Trie) para autocompletado.
-// Insertar / buscar una palabra de longitud m: O(m), independiente de cuántas palabras haya.
-// Autocompletar: O(m + tamaño del subárbol del prefijo) y se queda con las K más frecuentes (heap).
+
 #pragma once
 #include <string>
 #include <vector>

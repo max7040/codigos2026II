@@ -1,7 +1,4 @@
-// corrector.hpp - Sugerencias de corrección ortográfica.
-// Recorre el diccionario, calcula la distancia de edición (programación dinámica) contra cada
-// palabra candidata y se queda con las K mejores usando un heap.
-// Mejor = menor distancia; a igual distancia, mayor frecuencia; luego orden alfabético.
+
 #pragma once
 #include <cstdlib>
 #include <string>

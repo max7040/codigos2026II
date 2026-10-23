@@ -1,0 +1,5 @@
+categoria,algoritmo,caso,n,ms
+busqueda,Busqueda lineal   O(n),50pct_existen,20000,1746.83
+busqueda,Busqueda binaria  O(log n),50pct_existen,20000,16.0087
+busqueda,Tabla hash        O(1),50pct_existen,20000,2.31827
+busqueda,Trie              O(m),50pct_existen,20000,4.5706

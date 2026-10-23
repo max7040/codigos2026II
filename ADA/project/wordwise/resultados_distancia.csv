@@ -1,0 +1,11 @@
+categoria,algoritmo,caso,n,ms
+distancia,recursiva,peor_caso,4,0.0091
+distancia,programacion_dinamica,peor_caso,4,0.00139
+distancia,recursiva,peor_caso,6,0.2253
+distancia,programacion_dinamica,peor_caso,6,0.0025938
+distancia,recursiva,peor_caso,8,6.6272
+distancia,programacion_dinamica,peor_caso,8,0.0038122
+distancia,recursiva,peor_caso,10,150.864
+distancia,programacion_dinamica,peor_caso,10,0.00451645
+distancia,recursiva,peor_caso,12,4549.1
+distancia,programacion_dinamica,peor_caso,12,0.00601835

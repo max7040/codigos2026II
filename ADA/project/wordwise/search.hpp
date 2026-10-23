@@ -1,7 +1,4 @@
-// search.hpp - Búsqueda lineal y binaria sobre un vector de palabras.
-//  Lineal:  O(n)       (no necesita orden)
-//  Binaria: O(log n)   (requiere el vector ordenado)
-// (La búsqueda con tabla hash es O(1) promedio y con Trie es O(m): ver hash_table.hpp y trie.hpp)
+
 #pragma once
 #include <string>
 #include <vector>

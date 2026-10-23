@@ -1,5 +1,4 @@
-// hash_table.hpp - Tabla hash con encadenamiento separado (manejo de colisiones con listas)
-// Verificar una palabra: O(1) promedio, O(n) peor caso (todas en la misma cubeta)
+
 #pragma once
 #include <string>
 #include <vector>

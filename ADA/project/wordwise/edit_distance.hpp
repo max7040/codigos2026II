@@ -1,9 +1,4 @@
-// edit_distance.hpp - Distancia de edición (Levenshtein): mínimo de inserciones, borrados y
-// sustituciones para convertir la palabra a en la palabra b.
-//
-//  - Versión recursiva pura: resuelve los mismos subproblemas una y otra vez -> crece como
-//    el número de Delannoy (aprox. 3^n): exponencial.
-//  - Programación dinámica: guarda cada subproblema en una tabla -> O(n*m) tiempo.
+
 #pragma once
 #include <string>
 #include <vector>

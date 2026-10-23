@@ -1,13 +1,4 @@
-// sorting.hpp - Algoritmos de ordenamiento genéricos (reciben un comparador cmp(a,b) = "a va antes que b")
-//
-//  Algoritmo                 Mejor        Promedio     Peor         Espacio
-//  Burbuja (con bandera)     O(n)         O(n^2)       O(n^2)       O(1)
-//  Inserción                 O(n)         O(n^2)       O(n^2)       O(1)
-//  Selección                 O(n^2)       O(n^2)       O(n^2)       O(1)
-//  Merge Sort                O(n log n)   O(n log n)   O(n log n)   O(n)
-//  Quick Sort (mediana de 3) O(n log n)   O(n log n)   O(n^2)*      O(log n)
-//  Quick Sort (pivote final) O(n log n)   O(n log n)   O(n^2)       O(n) en el peor caso
-//  (*) con mediana de 3 el peor caso es muy difícil de provocar con datos reales
+
 #pragma once
 #include <vector>
 #include <functional>
